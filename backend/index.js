@@ -176,3 +176,54 @@ const getdata5 = async () => {
     }
 }
 getdata5();
+
+
+// // // Second Class of DB // // //
+
+// Connect MongoDB
+mongoose.connect("mongodb://127.0.0.1:27017/userdatabase")
+    .then(() => {
+        console.log("DB Connected Successfully");
+    })
+    .catch((err) => {
+        console.log('error ------ :', err);
+    })
+
+// // Create Schema with validations and errors in DataBase
+const userdb = new mongoose.Schema({
+    name: {
+        type: String,
+        trim: true,
+        lowercase: true,
+        required: true,
+    },
+    age: {
+        type: Number,
+        min: [18, "Age should be greater then 18"],
+        max: [35, "Age should be less then 35"],
+        required: true,
+    },
+    course: {
+        type: String,
+        enum: ['frontend_dev', 'backend_dev', 'data_modeling'],
+        required: true,
+    }
+})
+
+// // Create Model using Schema or Collection
+const User1 = new mongoose.model("User1", userdb)
+
+const userdb1 = async () => {
+    try {
+        const user1 = User1({
+            name: 'hemant bhargav',
+            age: 21,
+            course: 'backend_dev'
+        })
+        await user1.save();
+    }catch(error){
+        console.log('error ------ :', error);
+    }
+}
+
+userdb1()
